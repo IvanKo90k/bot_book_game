@@ -25,4 +25,4 @@ stickers_bye = ['bye_clip.tgs', 'bye_deadpool.webp', 'bye_fish.tgs', 'bye_geisha
 
 stickers_no = ['AnimatedSticker_gorilla.tgs']
 
-stickers_finish = ['AnimatedSticker_congrat.tgs']
+stickers_finish = ['AnimatedSticker_congrat.tgs'] # hello
