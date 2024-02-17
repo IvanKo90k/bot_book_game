@@ -23,6 +23,8 @@ stickers_bye = ['bye_clip.tgs', 'bye_deadpool.webp', 'bye_fish.tgs', 'bye_geisha
                 'bye_gondolier.webp', 'bye_it.webp', 'bye_Jinx.tgs', 'bye_Pettigrew .webp', 'bye_rat.tgs',
                 'bye_sonic.webp', 'bye_sorcerer.tgs', 'bye_spider-man.webp', 'bye_Tom_Jerry.webp']
 
+stickers_flight = ['flight_agent007.webp', 'flight_clippy.tgs', 'flight_dumbo.webp', 'flight_krtek.tgs']
+
 stickers_no = ['AnimatedSticker_gorilla.tgs']
 
 stickers_finish = ['AnimatedSticker_congrat.tgs'] # hello

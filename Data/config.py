@@ -1,5 +1,3 @@
-api_token = '6278513334:AAF4IKJsO6hiYtchRfERBrKdqG-clygvho0'
-openai_api_key = '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'
-# openai_api_key = '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'
+api_token = '6414452127:AAEMNIuXTM445JbfNQtdP_tyDgYet-gcB3c'
 
 admins = []
