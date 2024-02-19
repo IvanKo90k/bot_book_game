@@ -50,7 +50,6 @@ from stickers.stickers import stickers_start, stickers_money, stickers_cute, sti
     stickers_flight
 from States.user import registration
 from aiogram.dispatcher import FSMContext
-# from dice import battle
 import random
 import math
 import time
@@ -83,11 +82,6 @@ async def start(message: types.Message, state: FSMContext):
                            'Ласкаво прошу до книги-гри під назвою "Rebel Planet" авторства Robin Waterfield. Деталі можете дізнатися, натиснувши в Меню "довідка".',
                            reply_markup=markup)  # бот повідомляє про результат і питає, що робити далі
 
-
-# @dp.message_handler(text=name_button1)
-# async def process_0(message: types.Message, state: FSMContext):
-#     await message.answer("Please enter your enemy Mastery level.")
-#     await registration.MASTERY.set()
 
 @dp.message_handler(commands=['character_data'])
 async def character_data(message: types.Message):
@@ -147,41 +141,6 @@ async def process_callback(callback_query: types.CallbackQuery):
         indx += 1
         await callback_query.answer()
 
-    # if indx == 0:
-    #     await bot.send_message(user_id, text.intro, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 1:
-    #     await bot.send_message(user_id, text.story_1, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 2:
-    #     await bot.send_message(user_id, text.story_2, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 3:
-    #     await bot.send_message(user_id, text.story_3, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 4:
-    #     await bot.send_message(user_id, text.prehistory, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 5:
-    #     await bot.send_message(user_id, text.contacts_with_strangers, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 6:
-    #     await bot.send_message(user_id, text.mastery_endurance_luck, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 7:
-    #     await bot.send_message(user_id, text.mastery, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 8:
-    #     await bot.send_message(user_id, text.stamina_recovery, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 9:
-    #     await bot.send_message(user_id, text.luck, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 10:
-    #     await bot.send_message(user_id, text.battles, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 11:
-    #     await bot.send_message(user_id, text.fight_without_weapons, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 12:
-    #     await bot.send_message(user_id, text.fight_with_multiple_opponents, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 13:
-    #     await bot.send_message(user_id, text.using_luck_in_battles, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 14:
-    #     await bot.send_message(user_id, text.equipment_and_money, reply_markup=markup, parse_mode='Markdown')
-    # elif indx == 15:
-    #     await bot.send_message(callback_query.from_user.id, 'Ось і кінець! Щоб почати гру натисніть в Меню "старт".')
-    # indx += 1
-    # await callback_query.answer()
-
 
 @dp.callback_query_handler(lambda c: c.data == 'character_data')
 async def character_data(callback_query: types.CallbackQuery):
@@ -226,7 +185,6 @@ async def process_change_data(callback_query: types.CallbackQuery):
         Functions.DB.update_one_value(user_id, 'max_mastery', mastery)
         Functions.DB.update_one_value(user_id, 'max_endurance', endurance)
         Functions.DB.update_one_value(user_id, 'max_luck', luck)
-        # response_message = f"Your character data:\nMastery: {mastery}\nEndurance: {endurance}\nLuck: {luck}"
         response_message = f"Характеристики вашого персонажа:\nМайстерність: {mastery}\nВитривалість: {endurance}\nУдача: {luck}"
         await bot.send_message(user_id, response_message, reply_markup=markup, parse_mode='Markdown', )
     else:
@@ -545,13 +503,6 @@ async def text_5(callback_query: types.CallbackQuery):
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Зайти в магазин бакалійника", callback_data="grocery"),
              types.InlineKeyboardButton("Рухатися далі", callback_data="204")]
-    # check_152 = Functions.DB.select_one_value(user_id, 'check_152', 'user_id')
-    # if check_152:  # якщо був раніше в бакалійника
-    #     text_message = text.text_5_1
-    # else:
-    #     text_message = text.text_5_2
-    #     Functions.Functions.change_1_data(user_id, 'money', 'user_id', 20, multiplier=-1)
-    #     Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 4)
     markup.add(*item1)
     await bot.send_message(user_id, text.text_5, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
@@ -643,8 +594,7 @@ async def text_11(callback_query: types.CallbackQuery):
 async def text_12(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 12)
-    money = Functions.DB.select_one_value(user_id, 'money', 'user_id')
-    Functions.DB.update_one_value(user_id, 'money', money + 55)
+    Functions.Functions.change_1_data(user_id, 'money', 'user_id', 55)
     Functions.DB.update_one_value(user_id, 'food_briquette_12', 1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Битися з ними", callback_data="80"),
@@ -691,17 +641,14 @@ async def text_14(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '15')
 async def text_15(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 15)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton('Go on', callback_data="66")]
-    markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_15,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 15, "66", text.text_15)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 15)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton('Go on', callback_data="66")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_15, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '16')
@@ -727,23 +674,20 @@ async def text_16(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '17')
 async def text_17(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 17)
-    Functions.DB.update_add_enemy(callback_query.from_user.id, 7, 10, 'e_mastery_17', 'e_endurance_17')
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 17)
+    Functions.DB.update_add_enemy(user_id, 7, 10, 'e_mastery_17', 'e_endurance_17')
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Почати бійку", callback_data="fight")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_17,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_17, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '18')
 async def text_18(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 18)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 18)
     character_endurance = Functions.DB.select_one_value(callback_query.from_user.id, 'Endurance', 'user_id')
     character_endurance += 1
     Functions.DB.update_one_value(callback_query.from_user.id, 'Endurance', character_endurance)
@@ -751,38 +695,37 @@ async def text_18(callback_query: types.CallbackQuery):
     item1 = [types.InlineKeyboardButton("Піти направо", callback_data="296"),
              types.InlineKeyboardButton("Піти наліво", callback_data="171")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_18, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_18, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '19')
 async def text_19(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 19)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 19)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Запитати у сторожа, що знаходиться за іншими дверима", callback_data="380"),
              types.InlineKeyboardButton("Піти в університет", callback_data="146")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_19, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_19, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '20')
 async def text_20(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 20)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data="247")]
-    markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_20,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 20, "247", text.text_20)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 20)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data="247")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_20, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '21')
 async def text_21(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
     Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 21)
 
     # markup = types.InlineKeyboardMarkup()
@@ -813,12 +756,7 @@ async def text_21(callback_query: types.CallbackQuery):
     item1 = [types.InlineKeyboardButton("366", callback_data="366"),
              types.InlineKeyboardButton("295", callback_data="295")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_21,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(callback_query.from_user.id, text.text_21, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -835,9 +773,7 @@ async def text_22(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '23')
 async def text_23(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 23)
-    await bot.send_message(callback_query.from_user.id, text.text_23)
-    await callback_query.answer()
+    await Functions.Functions.handle_game_over(callback_query, 23, text.text_23)
 
 
 @dp.callback_query_handler(lambda c: c.data == '24')
@@ -856,56 +792,48 @@ async def text_24(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == 'first_a')
 async def text_24_1(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'flag24', 1)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'flag24', 1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("До бою", callback_data="fight")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, "Ти обираєш битися з першим аркадіанцем", reply_markup=markup,
+    await bot.send_message(user_id, "Ти обираєш битися з першим аркадіанцем", reply_markup=markup,
                            parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == 'second_a')
 async def text_24_2(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'flag24', 2)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'flag24', 2)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("До бою", callback_data="fight")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, "Ти обираєш битися з другим аркадіанцем", reply_markup=markup,
+    await bot.send_message(user_id, "Ти обираєш битися з другим аркадіанцем", reply_markup=markup,
                            parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '25')
 async def text_25(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 25)
-    endurance = Functions.DB.select_one_value(callback_query.from_user.id, 'Endurance', 'user_id')
-    endurance += 2
-    Functions.DB.update_one_value(callback_query.from_user.id, 'Endurance', endurance)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 25)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Go on", callback_data="213")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_25,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_25, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '26')
 async def text_26(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 26)
-    await bot.send_message(callback_query.from_user.id, text.text_26)
-    await callback_query.answer()
+    await Functions.Functions.handle_game_over(callback_query, 26, text.text_26)
 
 
 @dp.callback_query_handler(lambda c: c.data == '27')
 async def text_27(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 27)
-    await bot.send_message(callback_query.from_user.id, text.text_27)
-    await callback_query.answer()
+    await Functions.Functions.handle_game_over(callback_query, 27, text.text_27)
 
 
 @dp.callback_query_handler(lambda c: c.data == '28')
@@ -915,12 +843,7 @@ async def text_28(callback_query: types.CallbackQuery):
     item1 = [types.InlineKeyboardButton("Запитати, що відбувається", callback_data="353"),
              types.InlineKeyboardButton("Промовчати", callback_data="321")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_28,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(callback_query.from_user.id, text.text_28, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -931,12 +854,7 @@ async def text_29(callback_query: types.CallbackQuery):
     item1 = [types.InlineKeyboardButton("Постаратися зав'язати розмову", callback_data="354"),
              types.InlineKeyboardButton("Влаштуватися подалі від нього", callback_data="60")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_29,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(callback_query.from_user.id, text.text_29, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -948,40 +866,31 @@ async def text_30(callback_query: types.CallbackQuery):
              types.InlineKeyboardButton("На північ", callback_data="342"),
              types.InlineKeyboardButton("На південь", callback_data="181")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_30,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(callback_query.from_user.id, text.text_30, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '31')
 async def text_31(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 31)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data="119")]
-    markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_31, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 31, "119", text.text_31)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 31)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data="119")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_31, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '32')
 async def text_32(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 32)
-    endurance = Functions.DB.select_one_value(callback_query.from_user.id, 'Endurance', 'user_id')
-    endurance += 4
-    Functions.DB.update_one_value(callback_query.from_user.id, 'Endurance', endurance)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 32)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 4)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Go on", callback_data="292")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_32,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_32, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -1005,151 +914,108 @@ async def text_33(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '34')
 async def text_34(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 34)
-    await bot.send_message(callback_query.from_user.id, text.text_34)
-    await callback_query.answer()
+    await Functions.Functions.handle_game_over(callback_query, 34, text.text_34)
 
 
 @dp.callback_query_handler(lambda c: c.data == '35')
 async def text_35(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 35)
-    Functions.DB.update_add_enemy(callback_query.from_user.id, 7, 12, 'e_mastery_35', 'e_endurance_35')
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 35)
+    Functions.DB.update_add_enemy(user_id, 7, 12, 'e_mastery_35', 'e_endurance_35')
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Випробувати Удачу", callback_data="luck_35")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_35,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_35, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == 'luck_35')
 async def text_35_1(callback_query: types.CallbackQuery):
-    luck = Functions.DB.select_one_value(callback_query.from_user.id, 'Luck', 'user_id')
-    mastery_creature = Functions.DB.select_one_value(callback_query.from_user.id, 'e_mastery_35', 'user_id')
-    text_35_1 = 'Вам не пощастило. В будь-якому випадку до бою!'
+    user_id = callback_query.from_user.id
+    luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
+    mastery_creature = Functions.DB.select_one_value(user_id, 'e_mastery_35', 'user_id')
+    text_35_1 = 'Не пощастило. В будь-якому випадку до бою!'
 
     if luck > 0:
         result = Functions.Functions.roll_dice_2()
         if result <= luck:  # якщо пощастило
             mastery_creature -= 1
-            Functions.DB.update_one_value(callback_query.from_user.id, 'e_mastery_35', mastery_creature)
+            Functions.DB.update_one_value(user_id, 'e_mastery_35', mastery_creature)
             text_35_1 = 'Вам пощастило, частина наркотику, який був у напої, потрапила до рота вашого опонента, і в результаті його Майстерність зменшується на 1 пункт'
-        luck -= 1
-        Functions.DB.update_luck(callback_query.from_user.id, 'Luck', luck)
+        Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Почати бійку", callback_data="fight")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text_35_1,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text_35_1, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '36')
 async def text_36(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 36)
-    await bot.send_message(callback_query.from_user.id, text.text_36)
-    await callback_query.answer()
+    await Functions.Functions.handle_game_over(callback_query, 36, text.text_36)
 
 
 @dp.callback_query_handler(lambda c: c.data == '37')
 async def text_37(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 37)
-    money = Functions.DB.select_one_value(callback_query.from_user.id, 'money', 'user_id')
-    Functions.DB.update_one_value(callback_query.from_user.id, 'money', money - 10)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 37)
+    Functions.Functions.change_1_data(user_id, 'money', 'user_id', 10, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Піти за нею", callback_data="75"),
              types.InlineKeyboardButton("Побути тут ще трохи", callback_data="81")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_37,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_37, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '38')
 async def text_38(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 38)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 38)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Піти з ним", callback_data="399"),
              types.InlineKeyboardButton("Залишити його і спробувати знайти меч", callback_data="137")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_38, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_38, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '39')
 async def text_39(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 39)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 39)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Повернути на північ", callback_data="277"),
              types.InlineKeyboardButton("Йти прямо", callback_data="23")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_39,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_39, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '40')
 async def text_40(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 40)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 40)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Спробувати пролізти в ліву ущелину", callback_data="14"),
              types.InlineKeyboardButton("Спробувати пролізти в праву ущелину", callback_data="355"),
              types.InlineKeyboardButton("Не ризикувати більше і повернутися на стежку", callback_data="147")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_40,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_40, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '41')
 async def text_41(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 41)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data="207")]
-    markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_41,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 41, "207", text.text_41)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 41)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data="207")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_41, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
-
-# @dp.callback_query_handler(lambda c: c.data == '42')
-# async def text_42(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 42
-#     Functions.DB.update_one_value(user_id, 'text_number', 42)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_42)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '42')
 async def text_42(callback_query: types.CallbackQuery):
@@ -1158,17 +1024,13 @@ async def text_42(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '43')
 async def text_43(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
     Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 43)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Дати інформацію", callback_data="345"),
              types.InlineKeyboardButton("Не давати інформацію", callback_data="368")]
     markup.add(*item1)
-    await bot.send_message(
-        callback_query.from_user.id,
-        text.text_43,
-        reply_markup=markup,
-        parse_mode='Markdown',
-    )
+    await bot.send_message(user_id, text.text_43, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -1227,35 +1089,38 @@ async def text_45(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '46')
 async def text_46(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 46)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 46)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Відправити в бій Дорадо", callback_data="175"),
              types.InlineKeyboardButton("Відправити в бій Мізара", callback_data="255")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_46, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_46, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '47')
 async def text_47(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 47)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 47)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Зупинитись в Зодіаку", callback_data="89"),
              types.InlineKeyboardButton("Зупинитись у Палаці Жирдяя", callback_data="101")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_47, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_47, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '48')
 async def text_48(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 48)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Продовжити", callback_data="164")]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_48, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 48, "164", text.text_48)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 48)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Продовжити", callback_data="164")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_48, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '49')
@@ -1284,58 +1149,30 @@ async def text_49(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '50')
 async def text_50(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 50)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 50)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Відправитися в університет", callback_data="146")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_50, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_50, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '51')
 async def text_51(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 51)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 51)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Перейти до 177", callback_data="177")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_51, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_51, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
-
-# @dp.callback_query_handler(lambda c: c.data == '52')
-# async def text_52(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 52
-#     Functions.DB.update_one_value(user_id, 'text_number', 52)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_52)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '52')
 async def text_52(callback_query: types.CallbackQuery):
     await Functions.Functions.handle_game_over(callback_query, 52, text.text_52)
 
-
-# @dp.callback_query_handler(lambda c: c.data == '53')
-# async def text_53(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 53
-#     Functions.DB.update_one_value(user_id, 'text_number', 53)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_53)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '53')
 async def text_53(callback_query: types.CallbackQuery):
@@ -1344,34 +1181,37 @@ async def text_53(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '54')
 async def text_54(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 54)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 54)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Повернутися на свій корабель", callback_data="191")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_54, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_54, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '55')
 async def text_55(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 55)
-    Functions.DB.update_add_enemy(callback_query.from_user.id, 8, 8, 'e_mastery_55', 'e_endurance_55')
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 55)
+    Functions.DB.update_add_enemy(user_id, 8, 8, 'e_mastery_55', 'e_endurance_55')
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Почати бійку", callback_data="fight")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_55, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_55, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '56')
 async def text_56(callback_query: types.CallbackQuery):
-    Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 56)
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'text_number', 56)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Прийняти безнадійний бій", callback_data="264"),
              types.InlineKeyboardButton("Стукати у двері", callback_data="364"),
              types.InlineKeyboardButton("Спробувати увійти в дім навпроти", callback_data="121")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_56, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_56, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -1392,44 +1232,6 @@ async def text_57(callback_query: types.CallbackQuery):
     await bot.send_message(user_id, text.text_57, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
-    # markup = types.InlineKeyboardMarkup()
-    # item1 = [types.InlineKeyboardButton('Перевірити Удачу', callback_data='check_luck_57')]
-    # markup.add(*item1)
-    # await bot.send_message(callback_query.from_user.id, text.text_57, reply_markup=markup, parse_mode='Markdown')
-    # await callback_query.answer()
-
-
-# @dp.callback_query_handler(lambda c: c.data == 'check_luck_57')
-# async def check_luck_57(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Retrieve Luck value
-#     luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
-#
-#     # Create InlineKeyboardMarkup
-#     markup = types.InlineKeyboardMarkup()
-#
-#     # Initialize default values
-#     result = Functions.Functions.roll_dice_2()
-#     item1 = [types.InlineKeyboardButton('Go on', callback_data='304')]
-#     text = 'Вам не пощастило'
-#
-#     # Check if luck is greater than 0
-#     if luck > 0:
-#         if result <= luck:  # good luck
-#             item1 = [types.InlineKeyboardButton('Go on', callback_data='359')]
-#             text = 'Вам пощастило'
-#         luck -= 1
-#         Functions.DB.update_one_value(user_id, 'Luck', luck)
-#
-#     markup.add(*item1)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text, reply_markup=markup, parse_mode='Markdown')
-#
-#     # Answer the callback query
-#     await callback_query.answer()
-
 
 @dp.callback_query_handler(lambda c: c.data == '58')
 async def text_58(callback_query: types.CallbackQuery):
@@ -1445,24 +1247,25 @@ async def text_58(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '59')
 async def text_59(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 59)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton('Go on', callback_data='118')]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_59, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 59, "118", text.text_59)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 59)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton('Go on', callback_data='118')]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_59, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '60')
 async def text_60(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
     Functions.DB.update_one_value(callback_query.from_user.id, 'text_number', 60)
-    luck = Functions.DB.select_one_value(callback_query.from_user.id, 'Luck', 'user_id')
-    Functions.DB.update_one_value(callback_query.from_user.id, 'Luck', luck - 1)
+    Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Go on", callback_data="99")]
     markup.add(*item1)
-    await bot.send_message(callback_query.from_user.id, text.text_60, reply_markup=markup, parse_mode='Markdown')
+    await bot.send_message(user_id, text.text_60, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
@@ -1505,8 +1308,7 @@ async def text_63(callback_query: types.CallbackQuery):
 async def text_64(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 64)
-    money = Functions.DB.select_one_value(user_id, 'money', 'user_id')
-    Functions.DB.update_one_value(user_id, 'money', money - 10)
+    Functions.Functions.change_1_data(user_id, 'money', 'user_id', 10, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Приєднатися до групи людей", callback_data='305')]
     markup.add(*item1)
@@ -1540,29 +1342,15 @@ async def text_66(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '67')
 async def text_67(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 67)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data='156')]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_67, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 67, "156", text.text_67)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 67)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data='156')]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_67, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
-
-# @dp.callback_query_handler(lambda c: c.data == '68')
-# async def text_68(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 68
-#     Functions.DB.update_one_value(user_id, 'text_number', 68)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_68)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '68')
 async def text_68(callback_query: types.CallbackQuery):
@@ -1573,8 +1361,7 @@ async def text_68(callback_query: types.CallbackQuery):
 async def text_69(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 69)
-    endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Endurance', endurance - 2)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Go on", callback_data='116')]
     markup.add(*item1)
@@ -1622,8 +1409,7 @@ async def text_72(callback_query: types.CallbackQuery):
 async def text_73(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 73)
-    endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Endurance', endurance + 4)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 4)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Вирушити праворуч", callback_data='296'),
              types.InlineKeyboardButton('Вирушити ліворуч', callback_data='171')]
@@ -1636,8 +1422,7 @@ async def text_73(callback_query: types.CallbackQuery):
 async def text_74(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 74)
-    luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Luck', luck + 1)
+    Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Go on", callback_data='134')]
     markup.add(*item1)
@@ -1674,8 +1459,7 @@ async def text_76(callback_query: types.CallbackQuery):
 async def text_77(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 77)
-    luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Luck', luck + 1)
+    Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Відразу увійти", callback_data='146'),
              types.InlineKeyboardButton('Зачекати деякий час зовні', callback_data='178')]
@@ -1690,8 +1474,7 @@ async def text_78(callback_query: types.CallbackQuery):
     Functions.DB.update_one_value(user_id, 'text_number', 78)
     endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
     Functions.DB.update_one_value(user_id, 'Endurance', endurance + math.ceil(endurance / 2))
-    mastery = Functions.DB.select_one_value(user_id, 'Mastery', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Mastery', mastery + 1)
+    Functions.Functions.change_1_data(user_id, 'Mastery', 'user_id', 1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Запитати, хто це", callback_data='20'),
              types.InlineKeyboardButton('Одразу відчинити двері', callback_data='350')]
@@ -1711,21 +1494,6 @@ async def text_79(callback_query: types.CallbackQuery):
     await bot.send_message(user_id, text.text_79, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
-
-# @dp.callback_query_handler(lambda c: c.data == '80')
-# async def text_80(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 80
-#     Functions.DB.update_one_value(user_id, 'text_number', 80)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_80)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '80')
 async def text_80(callback_query: types.CallbackQuery):
@@ -1756,21 +1524,6 @@ async def text_82(callback_query: types.CallbackQuery):
     await callback_query.answer()
 
 
-# @dp.callback_query_handler(lambda c: c.data == '83')
-# async def text_83(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 83
-#     Functions.DB.update_one_value(user_id, 'text_number', 83)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_83)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
-
 @dp.callback_query_handler(lambda c: c.data == '83')
 async def text_83(callback_query: types.CallbackQuery):
     await Functions.Functions.handle_game_over(callback_query, 83, text.text_83)
@@ -1792,10 +1545,8 @@ async def text_84(callback_query: types.CallbackQuery):
 async def text_85(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 85)
-    endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Endurance', endurance - 2)
-    mastery = Functions.DB.select_one_value(user_id, 'Mastery', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Mastery', mastery - 1)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2, multiplier=-1)
+    Functions.Functions.change_1_data(user_id, 'Mastery', 'user_id', 1, multiplier=-1)
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Go on", callback_data='215')]
     markup.add(*item1)
@@ -1805,24 +1556,26 @@ async def text_85(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '86')
 async def text_86(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 86)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data='381')]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_86, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 86, "381", text.text_86)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 86)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data='381')]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_86, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '87')
 async def text_87(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 87)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data='276')]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_87, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 87, "276", text.text_87)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 87)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data='276')]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_87, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '88')
@@ -1872,10 +1625,8 @@ async def text_91(callback_query: types.CallbackQuery):
 async def text_92(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 92)
-    endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Endurance', endurance - 2)
-    mastery = Functions.DB.select_one_value(user_id, 'Mastery', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Mastery', mastery - 1)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2, multiplier=-1)
+    Functions.Functions.change_1_data(user_id, 'Mastery', 'user_id', 1, multiplier=-1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Дослідити іншу ущелину", callback_data='355'),
              types.InlineKeyboardButton('Вважаю, що настав час продовжити подорож', callback_data='10')]
@@ -1913,8 +1664,6 @@ async def text_95(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 95)
     Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1, multiplier=-1)
-    # luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
-    # Functions.DB.update_one_value(user_id, 'Luck', luck - 1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Чинити опір", callback_data='156'),
              types.InlineKeyboardButton('Занадто пригнічений, щоб турбуватися через напад', callback_data='272')]
@@ -1939,8 +1688,7 @@ async def text_96(callback_query: types.CallbackQuery):
 async def text_97(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 97)
-    luck = Functions.DB.select_one_value(user_id, 'Luck', 'user_id')
-    Functions.DB.update_one_value(user_id, 'Luck', luck + 1)
+    Functions.Functions.change_1_data(user_id, 'Luck', 'user_id', 1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Піти нагору", callback_data='258'),
              types.InlineKeyboardButton('Залишити університет', callback_data='235')]
@@ -1978,8 +1726,8 @@ async def text_98_1(callback_query: types.CallbackQuery):
                                    f"Ви падаєте на останній ділянці спуску і втрачаєте 2 бали Витривалості, крім того ламається кінець у палиці. Потім ви продовжуєте подорож.",
                                    reply_markup=markup)
         else:
-            await bot.send_message(callback_query.from_user.id, f"Ви падаєте з великої висоти і розбиваєтеся")
-        Functions.DB.update_one_value(callback_query.from_user.id, 'Luck', luck - 1)
+            await bot.send_message(user_id, f"Ви падаєте з великої висоти і розбиваєтеся")
+        Functions.DB.update_one_value(user_id, 'Luck', luck - 1)
     await callback_query.answer()
 
 
@@ -1987,6 +1735,7 @@ async def text_98_1(callback_query: types.CallbackQuery):
 async def text_99(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 99)
+    Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2, multiplier=-1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Зайти в бакалею", callback_data="152"),
              types.InlineKeyboardButton("Зайти в магазин обладнання", callback_data="382")]
@@ -2016,8 +1765,6 @@ async def text_101(callback_query: types.CallbackQuery):
     Functions.DB.update_one_value(user_id, 'text_number', 101)
     Functions.Functions.change_1_data(user_id, 'money', 'user_id', 50, multiplier=-1)
     Functions.Functions.change_1_data(user_id, 'Endurance', 'user_id', 2)
-    # endurance = Functions.DB.select_one_value(user_id, 'Endurance', 'user_id')
-    # Functions.DB.update_one_value(user_id, 'Endurance', endurance + 2)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Поставити кілька загальних запитань про Радикс", callback_data="77"),
              types.InlineKeyboardButton("Попросити пояснити феномен зруйнованих будинків", callback_data="306")]
@@ -2064,13 +1811,14 @@ async def text_104(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == '105')
 async def text_105(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    Functions.DB.update_one_value(user_id, 'text_number', 105)
-    markup = types.InlineKeyboardMarkup()
-    item1 = [types.InlineKeyboardButton("Go on", callback_data="168")]
-    markup.add(*item1)
-    await bot.send_message(user_id, text.text_105, reply_markup=markup, parse_mode='Markdown')
-    await callback_query.answer()
+    await Functions.Functions.handle_move(callback_query, 105, "168", text.text_105)
+    # user_id = callback_query.from_user.id
+    # Functions.DB.update_one_value(user_id, 'text_number', 105)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = [types.InlineKeyboardButton("Go on", callback_data="168")]
+    # markup.add(*item1)
+    # await bot.send_message(user_id, text.text_105, reply_markup=markup, parse_mode='Markdown')
+    # await callback_query.answer()
 
 
 @dp.callback_query_handler(lambda c: c.data == '106')
@@ -2275,6 +2023,7 @@ async def text_110_1(callback_query: types.CallbackQuery):
     await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
+
 @dp.callback_query_handler(lambda c: c.data == '110_2')
 async def text_110_2(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -2312,6 +2061,7 @@ async def text_110_2(callback_query: types.CallbackQuery):
     markup.add(*Functions.Functions.create_inline_buttons(*buttons_data))
     await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
+
 
 @dp.callback_query_handler(lambda c: c.data == '110_3')
 async def text_110_3(callback_query: types.CallbackQuery):
@@ -2351,6 +2101,7 @@ async def text_110_3(callback_query: types.CallbackQuery):
     await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
+
 @dp.callback_query_handler(lambda c: c.data == '110_4')
 async def text_110_4(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -2388,6 +2139,7 @@ async def text_110_4(callback_query: types.CallbackQuery):
     markup.add(*Functions.Functions.create_inline_buttons(*buttons_data))
     await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
+
 
 @dp.callback_query_handler(lambda c: c.data == '110_5')
 async def text_110_5(callback_query: types.CallbackQuery):
@@ -2712,21 +2464,6 @@ async def text_128(callback_query: types.CallbackQuery):
     await bot.send_message(user_id, text.text_128, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
-
-# @dp.callback_query_handler(lambda c: c.data == '129')
-# async def text_129(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 129
-#     Functions.DB.update_one_value(user_id, 'text_number', 129)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_129)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '129')
 async def text_129(callback_query: types.CallbackQuery):
@@ -3285,6 +3022,7 @@ async def text_164(callback_query: types.CallbackQuery):
 async def text_165(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 165)
+    Functions.Functions.change_1_data(user_id, 'Mastery', 'user_id', 1, multiplier=-1)
     Functions.DB.update_add_enemy(user_id, 6, 8, 'e_mastery_165', 'e_endurance_165')
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Почати бійку", callback_data="fight")]
@@ -3292,21 +3030,19 @@ async def text_165(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, text.text_165, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
+@dp.callback_query_handler(lambda c: c.data == 'take_sword_165')
+async def text_165_1(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'sword', 1)
+    Functions.DB.update_one_value(user_id, 'without_weapons', 1)
+    Functions.Functions.change_1_data(user_id, 'Mastery', 'user_id', 1)
+    text_message = 'Тепер у вас є меч.'
+    markup = types.InlineKeyboardMarkup()
+    item1 = [types.InlineKeyboardButton("Go on", callback_data="336")]
+    markup.add(*item1)
+    await bot.send_message(callback_query.from_user.id, text_message, reply_markup=markup, parse_mode='Markdown')
+    await callback_query.answer()
 
-# @dp.callback_query_handler(lambda c: c.data == '166')
-# async def text_166(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 166
-#     Functions.DB.update_one_value(user_id, 'text_number', 166)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_166)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '166')
 async def text_166(callback_query: types.CallbackQuery):
@@ -3354,10 +3090,6 @@ async def text_169(callback_query: types.CallbackQuery):
 
     await bot.send_message(user_id, text.text_169, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
-
-    # markup = types.InlineKeyboardMarkup()
-    # item1 = [types.InlineKeyboardButton("Go on", callback_data="381")]
-    # markup.add(*item1)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'check_169')
@@ -3463,40 +3195,13 @@ async def text_173(callback_query: types.CallbackQuery):
     await callback_query.answer()
 
 
-# @dp.callback_query_handler(lambda c: c.data == '174')
-# async def text_174(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 174
-#     Functions.DB.update_one_value(user_id, 'text_number', 174)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_174)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
 
 @dp.callback_query_handler(lambda c: c.data == '174')
 async def text_174(callback_query: types.CallbackQuery):
     await Functions.Functions.handle_game_over(callback_query, 174, text.text_174)
 
 
-# @dp.callback_query_handler(lambda c: c.data == '175')
-# async def text_175(callback_query: types.CallbackQuery):
-#     user_id = callback_query.from_user.id
-#
-#     # Update text_number to 175
-#     Functions.DB.update_one_value(user_id, 'text_number', 175)
-#
-#     Functions.DB.clear_row_by_id(user_id)
-#
-#     # Send the message
-#     await bot.send_message(user_id, text.text_175)
-#
-#     # Answer the callback query
-#     await callback_query.answer()
+
 
 @dp.callback_query_handler(lambda c: c.data == '175')
 async def text_175(callback_query: types.CallbackQuery):

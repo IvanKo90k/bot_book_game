@@ -6,7 +6,7 @@ from loader import dp, types, bot
 from Functions.DB import get_values_if_conditions, insert_character_data, update_mastery_endurance_luck, \
     update_character_endurance, retrieve_character_data, retrieve_creature_data, update_luck, select_one_value, \
     update_one_value, update_add_enemy, clear_row_by_id
-# from Handlers.User import name_button2
+import text
 import random
 
 # name_button1, name_button2 = 'Заробити 1 лексикрону', 'Заробити 2 лексикрони'
@@ -137,6 +137,7 @@ def handle_creature_attack(user_id, text_number, flag, player_attack, character)
         character.endurance -= 2
         update_character_endurance(user_id, 'Endurance', character.endurance)
 
+
 async def handle_game_over(callback_query: types.CallbackQuery, text_number: int, response_text: str):
     user_id = callback_query.from_user.id
 
@@ -148,6 +149,23 @@ async def handle_game_over(callback_query: types.CallbackQuery, text_number: int
 
     # Send the message
     await bot.send_message(user_id, response_text)
+
+    # Answer the callback query
+    await callback_query.answer()
+
+async def handle_move(callback_query: types.CallbackQuery, text_number: int, next_callback_data: str, text_message: str):
+    user_id = callback_query.from_user.id
+
+    # Update text_number
+    update_one_value(user_id, 'text_number', text_number)
+
+    # Create inline keyboard markup
+    markup = types.InlineKeyboardMarkup()
+    item1 = [types.InlineKeyboardButton('Go on', callback_data=next_callback_data)]
+    markup.add(*item1)
+
+    # Send the message
+    await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
 
     # Answer the callback query
     await callback_query.answer()
@@ -1116,10 +1134,15 @@ async def battle_for_2(bot, user_id, character, creature):
                 markup.add(*item1)
                 await bot.send_message(user_id, 'The player wins!', reply_markup=markup, parse_mode='Markdown')
             elif text_number == 165:
-                change_1_data(user_id, 'Mastery', 'user_id', 1)
-                item1 = [types.InlineKeyboardButton('336', callback_data='336')]
+                item1 = [types.InlineKeyboardButton('Взяти меч', callback_data='take_sword_136'),
+                         types.InlineKeyboardButton('Не треба меч', callback_data='336')]
                 markup.add(*item1)
-                await bot.send_message(user_id, 'The player wins!', reply_markup=markup, parse_mode='Markdown')
+                await bot.send_message(user_id,
+                                       'Ви виграли! Викидаєте всі предмети зі свого рюкзака, '
+                                       'у вас більше немає бажання повертатися до спекулянта. '
+                                       'Можете взяти меч. Ви повинні негайно залишити космопорт, '
+                                       'оскільки будь-якої миті на вас може початися полювання.',
+                                       reply_markup=markup, parse_mode='Markdown')
             elif text_number == 172:
                 enemy1_endurance = select_one_value(user_id, f'e_endurance_{text_number}_1', 'user_id')
                 enemy2_endurance = select_one_value(user_id, f'e_endurance_{text_number}_2', 'user_id')
@@ -2393,10 +2416,15 @@ async def process_callback_way2(callback_query: types.CallbackQuery):
                     markup.add(*item1)
                     await bot.send_message(user_id, 'The player wins!', reply_markup=markup, parse_mode='Markdown')
                 elif text_number == 165:
-                    change_1_data(user_id, 'Mastery', 'user_id', 1)
-                    item1 = [types.InlineKeyboardButton('336', callback_data='336')]
+                    item1 = [types.InlineKeyboardButton('Взяти меч', callback_data='take_sword_136'),
+                             types.InlineKeyboardButton('Не треба меч', callback_data='336')]
                     markup.add(*item1)
-                    await bot.send_message(user_id, 'The player wins!', reply_markup=markup, parse_mode='Markdown')
+                    await bot.send_message(user_id,
+                                           'Ви виграли! Викидаєте всі предмети зі свого рюкзака, '
+                                           'у вас більше немає бажання повертатися до спекулянта. '
+                                           'Можете взяти меч. Ви повинні негайно залишити космопорт, '
+                                           'оскільки будь-якої миті на вас може початися полювання.',
+                                           reply_markup=markup, parse_mode='Markdown')
                 elif text_number == 172:
                     enemy1_endurance = select_one_value(user_id, f'e_endurance_{text_number}_1', 'user_id')
                     enemy2_endurance = select_one_value(user_id, f'e_endurance_{text_number}_2', 'user_id')
