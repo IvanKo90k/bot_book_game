@@ -153,7 +153,9 @@ async def handle_game_over(callback_query: types.CallbackQuery, text_number: int
     # Answer the callback query
     await callback_query.answer()
 
-async def handle_move(callback_query: types.CallbackQuery, text_number: int, next_callback_data: str, text_message: str):
+
+async def handle_move(callback_query: types.CallbackQuery, text_number: int, next_callback_data: str,
+                      text_message: str):
     user_id = callback_query.from_user.id
 
     # Update text_number
@@ -168,6 +170,19 @@ async def handle_move(callback_query: types.CallbackQuery, text_number: int, nex
     await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
 
     # Answer the callback query
+    await callback_query.answer()
+
+
+async def handle_1_fight(callback_query: types.CallbackQuery, text_number: int, e_mastery: int, e_endurance: int,
+                         callback_data: str, text_message: str):
+    user_id = callback_query.from_user.id
+    update_one_value(user_id, 'text_number', text_number)
+    update_add_enemy(user_id, e_mastery, e_endurance, f'e_mastery_{text_number}',
+                     f'e_endurance_{text_number}')
+    markup = types.InlineKeyboardMarkup()
+    item1 = [types.InlineKeyboardButton("Почати бійку", callback_data=callback_data)]
+    markup.add(*item1)
+    await bot.send_message(user_id, text_message, reply_markup=markup, parse_mode='Markdown')
     await callback_query.answer()
 
 
