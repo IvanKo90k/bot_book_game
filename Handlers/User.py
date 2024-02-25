@@ -196,6 +196,7 @@ async def process_change_data(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data == 'go_on')
 async def go_on(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
+    Functions.DB.update_one_value(user_id, 'sword', 1)
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Наказати комп'ютеру виконати маневр ухилу", callback_data="48"),
              types.InlineKeyboardButton('Продовжити політ', callback_data='398')]
@@ -1077,7 +1078,7 @@ async def text_45(callback_query: types.CallbackQuery):
     sword = Functions.DB.select_one_value(user_id, 'sword', 'user_id')
     markup = types.InlineKeyboardMarkup()
     item1 = [types.InlineKeyboardButton("Відійти від клубу", callback_data="390")]
-    if sword == 1:
+    if sword:
         item1 = [types.InlineKeyboardButton("Відійти від клубу", callback_data="390"),
                  types.InlineKeyboardButton("Спробувати розрубати замок на дверях своїм мечем", callback_data="366")]
         markup.add(*item1)
@@ -1402,7 +1403,7 @@ async def text_71(callback_query: types.CallbackQuery):
 async def text_72(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 72)
-    Functions.DB.update_one_value(user_id, 'sword', 0)
+    Functions.DB.clear_cell(user_id, 'sword')
     markup = types.InlineKeyboardMarkup(row_width=1)
     item1 = [types.InlineKeyboardButton("Спробувати зламати двері", callback_data='360')]
     markup.add(*item1)
@@ -6485,16 +6486,35 @@ async def text_380(callback_query: types.CallbackQuery):
 async def text_381(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     Functions.DB.update_one_value(user_id, 'text_number', 381)
+    grenade = Functions.DB.select_one_value(user_id, 'grenade_110_215', 'user_id')
+    elmonit = Functions.DB.select_one_value(user_id, 'sealed_tube_110', 'user_id')
+    magnetic_mine = Functions.DB.select_one_value(user_id, 'magnetic_mine_110', 'user_id')
+    sword = Functions.DB.select_one_value(user_id, 'sword', 'user_id')
+    phaser = Functions.DB.select_one_value(user_id, 'hand_phaser_110', 'user_id')
+    scanner = Functions.DB.select_one_value(user_id, 'scanner_110_117', 'user_id')
+    buttons_data = []
+    if grenade:
+        buttons_data.append(("Фотонна граната", "312"))
+    if elmonit:
+        buttons_data.append(("Ельмоніт", "395"))
+    if magnetic_mine:
+        buttons_data.append(("Магнітна міна", "6"))
+    if sword:
+        buttons_data.append(("Лазерний меч", "332"))
+    if phaser:
+        buttons_data.append(("Фазер", "369"))
+    if scanner:
+        buttons_data.append(("Інфрачервоний сканер", "149"))
 
-    buttons_data = [
-        ("Кусачки", "61"),
-        ("Фотонна граната", "312"),
-        ("Ельмоніт", "395"),
-        ("Магнітна міна", "6"),
-        ("Лазерний меч", "332"),
-        ("Фазер", "369"),
-        ("Інфрачервоний сканер", "149")
-    ]
+    # buttons_data = [
+    #     ("Кусачки", "61"),
+    #     ("Фотонна граната", "312"),
+    #     ("Ельмоніт", "395"),
+    #     ("Магнітна міна", "6"),
+    #     ("Лазерний меч", "332"),
+    #     ("Фазер", "369"),
+    #     ("Інфрачервоний сканер", "149")
+    # ]
     markup = types.InlineKeyboardMarkup(row_width=1)
     markup.add(*Functions.Functions.create_inline_buttons(*buttons_data))
 
