@@ -1,10 +1,10 @@
 import asyncio
 from Handlers import dp
 from aiogram import executor
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
+# from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from Functions.Functions import on_startup
 
-dp.middleware.setup(LoggingMiddleware())
+# dp.middleware.setup(LoggingMiddleware())
 
 if __name__ == '__main__':
     # Start the bot
